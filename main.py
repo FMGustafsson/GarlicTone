@@ -45,12 +45,11 @@ async def start_game(interaction: discord.Interaction):
         await channel.send("No players have joined!")
     else:
         await channel.send("The following players have joined the game!\n" + str(players))
-
-        for player in players:
-            player = player[2:]
-            player = player[:-1]
-            print(player)
-            user = await client.fetch_user(player)
+        for i in range(len(players)):
+            players[i] = players[i][2:]
+            players[i] = players[i][:-1]
+            print(players)
+            user = await client.fetch_user(players[i])
             await user.send(file=discord.File('blankdrawing.png'))
         await asyncio.sleep(20)
         await download_image_and_send(players)
@@ -67,22 +66,10 @@ async def on_ready():  #  Called when internal cache is loaded
     pass
 
 @client.event
-async def send_dm_to_players(players):
-    for player in players:
-        player = player[2:]
-        player = player[:-1]
-        print(player)
-        user = await client.fetch_user(player)
-        await user.send(file=discord.File('blankdrawing.png'))
-    await asyncio.sleep(20)
-    await download_image_and_send(players)
-
-@client.event
 async def download_image_and_send(players):
-    os.mkdir('temp')
-    i=1
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
     for player in players:
-        player = player[2:-1]
         user = await client.fetch_user(player)
         if user:
             # found the user
@@ -95,13 +82,16 @@ async def download_image_and_send(players):
                 imageName = "temp/image" + player + ".png"
                 await latestmessage.attachments[0].save(imageName) # saves the file
                 print("wins")
-                user = await client.fetch_user(players[i])
-                await user.send(file=discord.File(imageName))
         else:
             # Not found the user
             print("Fuck")
+    i=1
+    for player in players:
+        prevImage = os.path.join("temp/image", player, ".png")
+        user = await client.fetch_user(players[i])
+        await user.send(file=discord.File(prevImage))
         i=i+1
-        if i>len(players):
+        if i>=len(players):
             i=0
 
 
