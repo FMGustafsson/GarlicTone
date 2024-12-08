@@ -134,12 +134,15 @@ async def ask_for_prompt(players):
         promptFile.write(str(latestmessage.content))
 
 
+#@client.tree.command(description="Joins VC")
+async def join_vc(interaction: discord.Interaction):
+    channel = interaction.user.voice.channel
+    vc = await channel.connect()
 
-
-@client.tree.command(description="Joins VC")
-async def joinvc(interaction: discord.Interaction):
-    channel = interaction.user.voice.voice_channel
-    await client.join_voice_channel(channel)
+#@client.tree.command(description="says hi")
+async def play_vc(audio_file: str, vc: VoiceClient):
+    vc.play(discord.FFmpegPCMAudio(audio_file))
+    return 1
 
 
 
