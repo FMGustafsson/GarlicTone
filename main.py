@@ -26,10 +26,17 @@ class MyClient(discord.Client):
 client = MyClient()
 
 @client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
-async def start_game(interation: discord.Interaction):
-    await interation.response.send_message(
+async def start_game(interaction: discord.Interaction):
+    await interaction.response.send_message(
         f"Game of Garlic Tone started!"
     )
+
+@client.tree.command(description="Describe what the bot does")
+async def info(interaction: discord.Interaction):
+    await interaction.response.send_message(
+        f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
+    )
+
 
 #@client.event
 #async def on_ready():
