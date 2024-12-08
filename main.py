@@ -23,7 +23,7 @@ class MyClient(discord.Client):
 
 client = MyClient()
 
-@client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
+@client.tree.command(description="Start a game of garlic tone with the bot")
 async def start_game(interaction: discord.Interaction):
     players = []
     message = await interaction.response.send_message(
@@ -57,9 +57,29 @@ async def start_game(interaction: discord.Interaction):
 
 @client.tree.command(description="Describe what the bot does")
 async def info(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
+    embed = discord.Embed(
+        title = "GarlicTone Information", 
+        description = "This is a version of the popular online game 'gartic phone' that runs entirely in discord. Run /start_game to give it a try! Alternatively, run /help to see all the commands you can use.",
+        color = 0xff0000
     )
+    embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar.url)
+    embed.add_field(name="Date Made:", value="08/12/2024")
+    embed.add_field(name="Team:", value="Crack")
+    embed.set_footer(text="Made for the CSS Botathon 2024!")
+    await interaction.response.send_message(embed=embed)
+
+@client.tree.command(description="Lists all commands for the bot")
+async def help(interaction: discord.Integration):
+    embed = discord.Embed(
+        title = "GarlicTone Help",
+        description = "The help command lists and describes the basics of all commands you can use!",
+        color = 0xff0000
+    )
+    embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar.url)
+    embed.add_field(name="start_game", value="The 'start_game' command allows you to start a game of GarticTone! Make sure to react to the message to join the game!")
+    embed.add_field(name="info", value="The 'info' command displays basic information about the GarlicTone bot, including how to use it.")
+    embed.add_field(name="help", value="The 'help' commands displays all the possible commands and what they do.")
+    await interaction.response.send_message(embed=embed)
 
 @client.event
 async def on_ready():  #  Called when internal cache is loaded
