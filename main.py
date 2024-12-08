@@ -5,6 +5,10 @@ import discord
 import re
 from dotenv import load_dotenv
 
+start_msg  = f"Welcome to GarlicTone! Round 1 has started!\nCome up with a prompt to be given to another player!"
+prompt_msg = f"Another player has drawn the image below; can you guess what their prompt was?"
+image_msg  = f"Another player has come up with the prompt below; draw an image based on their prompt for someone else to guess!"
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 print(TOKEN)
