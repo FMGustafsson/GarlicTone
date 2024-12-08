@@ -39,7 +39,9 @@ async def start_game(interaction: discord.Interaction):
     await channel.send("hello world") #  Sends message to channel
     players = []
 
-    message = await channel.send("Message")
+    message = await channel.send(
+        f"React to this message with ✅ to join the game!"
+    )
     await message.add_reaction('✅')
     await asyncio.sleep(10)
 
@@ -78,16 +80,29 @@ async def send_dm_to_players(players):
         print(player)
         user = await client.fetch_user(player)
         await user.send(file=discord.File('blankdrawing.png'))
+    await asyncio.sleep(20)
     await download_image_and_send(players)
 
 @client.event
 async def download_image_and_send(players):
     for player in players:
-        latestmessage = (await client.get_channel(player).history(limit=1).flatten())[0]
-        if str(latestmessage.attachments) == "[]": # Checks if there is an attachment on the message
-            return
-        else: # If there is it gets the filename from message.attachments
-            await latestmessage.attachments[0].save(latestmessage.attachments[0].filename) # saves the file
+        player = player[2:]
+        player = player[:-1]
+        user = await client.fetch_user(player)
+        if user:
+            # found the user
+            messages = [message async for message in user.history(limit=1)]
+            latestmessage = messages[0]
+            if not latestmessage.attachments: # Checks if there is an attachment on the message
+                print("Balls")
+                return
+            else: # If there is it gets the filename from message.attachments
+                imageName = "image" + player + ".png"
+                await latestmessage.attachments[0].save(imageName) # saves the file
+                print("wins")
+        else:
+            # Not found the user
+            print("Fuck")
 
 
 
