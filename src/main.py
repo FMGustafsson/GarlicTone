@@ -65,13 +65,17 @@ async def start_game(interaction: discord.Interaction):
             round = round+1
             if round>len(players):
                 break
+            await send_image(players, iteration)
+            iteration = iteration + 1
             await ask_for_prompt(players, iteration)
             round = round+1
             if round>len(players):
                 break
+            await send_prompt(players, iteration)
             await send_blank(players)
             await asyncio.sleep(30)
             await download_image_and_send(players, iteration)
+        print("Finished")
 
 
 @client.tree.command(description="Describe what the bot does")
@@ -151,6 +155,8 @@ async def download_image_and_send(players, round):
         else:
             # Not found the user
             print("Fuck")
+    
+async def send_image(players, round):
     i=1
     for player in players:
         prevImage = "temp/image_" + player + "_" + str(round) + ".png"
@@ -201,6 +207,8 @@ async def ask_for_prompt(players, round):
         promptFile = open(promptPath, 'w')
         promptFile.write(str(latestmessage.content))
         promptFile.close()
+
+async def send_prompt(players, round):
     for i in range(len(players)):
         if i == len(players)-1:
             user = await client.fetch_user(players[0])
@@ -210,8 +218,6 @@ async def ask_for_prompt(players, round):
         prevPrompt = open(prevPromptPath, 'r')
         prompt = prevPrompt.read()
         await user.send("Your prompt is " + prompt)
-
-
 
 
 async def send_final_images(GuildChannel: channel):
