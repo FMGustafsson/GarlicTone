@@ -46,6 +46,16 @@ async def start_game(interaction: discord.Interaction):
     else:
         await channel.send("The following players have joined the game!\n" + str(players))
 
+        for player in players:
+            player = player[2:]
+            player = player[:-1]
+            print(player)
+            user = await client.fetch_user(player)
+            await user.send(file=discord.File('blankdrawing.png'))
+        await asyncio.sleep(20)
+        await download_image_and_send(players)
+
+
 @client.tree.command(description="Describe what the bot does")
 async def info(interaction: discord.Interaction):
     embed = discord.Embed(
@@ -90,9 +100,9 @@ async def send_dm_to_players(players):
 @client.event
 async def download_image_and_send(players):
     os.mkdir('temp')
+    i=1
     for player in players:
-        player = player[2:]
-        player = player[:-1]
+        player = player[2:-1]
         user = await client.fetch_user(player)
         if user:
             # found the user
@@ -105,9 +115,14 @@ async def download_image_and_send(players):
                 imageName = "temp/image" + player + ".png"
                 await latestmessage.attachments[0].save(imageName) # saves the file
                 print("wins")
+                user = await client.fetch_user(players[i])
+                await user.send(file=discord.File(imageName))
         else:
             # Not found the user
             print("Fuck")
+        i=i+1
+        if i>len(players):
+            i=0
 
 
 
