@@ -1,9 +1,11 @@
 # bot.py
 import os
+import shutil
 import asyncio
 import discord
 import re
 from dotenv import load_dotenv
+from utils import *
 
 start_msg  = f"Welcome to GarlicTone! Round 1 has started!\nCome up with a prompt to be given to another player!"
 prompt_msg = f"Another player has drawn the image below; can you guess what their prompt was?"
@@ -122,7 +124,7 @@ async def download_initial_image_and_send(players):
         else:
             # Not found the user
             print("Fuck")
-    i=1
+    i=1 
     for player in players:
         prevImage = "temp/image_" + player + "_" + "0.png"
         user = await client.fetch_user(players[i])
@@ -212,12 +214,12 @@ async def ask_for_prompt(players, round):
 
 
 
-
-@client.tree.command(description="Joins VC")
-async def joinvc(interaction: discord.Interaction):
-    channel = interaction.user.voice.voice_channel
-    await client.join_voice_channel(channel)
-
+async def send_final_images(GuildChannel: channel):
+    for file in os.listdir("temp/"):
+        if file.startswith("final"):
+            with open(file, 'rb') as f:
+                image = discord.File(f)
+                await channel.send(file=picture)
 
 
 client.run(TOKEN)
