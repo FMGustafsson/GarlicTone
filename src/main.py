@@ -214,12 +214,12 @@ async def ask_for_prompt(players, round):
 
 
 
-async def send_final_images(GuildChannel: channel):
+async def send_final_images(channel):
     for file in os.listdir("temp/"):
         if file.startswith("final"):
             with open(file, 'rb') as f:
                 image = discord.File(f)
-                await channel.send(file=picture)
+                await channel.send(file=image)
 
 
 client.run(TOKEN)
