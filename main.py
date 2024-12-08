@@ -85,6 +85,7 @@ async def send_dm_to_players(players):
 
 @client.event
 async def download_image_and_send(players):
+    os.mkdir('temp')
     for player in players:
         player = player[2:]
         player = player[:-1]
@@ -97,7 +98,7 @@ async def download_image_and_send(players):
                 print("Balls")
                 return
             else: # If there is it gets the filename from message.attachments
-                imageName = "image" + player + ".png"
+                imageName = "temp/image" + player + ".png"
                 await latestmessage.attachments[0].save(imageName) # saves the file
                 print("wins")
         else:
