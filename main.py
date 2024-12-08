@@ -46,6 +46,16 @@ async def start_game(interaction: discord.Interaction):
     else:
         await channel.send("The following players have joined the game!\n" + str(players))
 
+        for player in players:
+            player = player[2:]
+            player = player[:-1]
+            print(player)
+            user = await client.fetch_user(player)
+            await user.send(file=discord.File('blankdrawing.png'))
+        await asyncio.sleep(20)
+        await download_image_and_send(players)
+
+
 @client.tree.command(description="Describe what the bot does")
 async def info(interaction: discord.Interaction):
     await interaction.response.send_message(
