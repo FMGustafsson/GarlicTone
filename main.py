@@ -27,12 +27,14 @@ client = MyClient()
 
 @client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
 async def start_game(interaction: discord.Interaction):
-    channel_id = 1315251666349588492
-    channel = client.get_channel(channel_id)
+    #channel_id = 1315251666349588492
+    #channel = client.get_channel(channel_id)
+    #channel = client.get_channel()
     players = []
-    await interaction.response.send_message(
+    message = await interaction.response.send_message(
         f"Game of Garlic Tone started!"
     )
+    channel = interaction.channel
     message = await channel.send(
         f"React to this message with ✅ to join the game!"
     )
@@ -44,14 +46,10 @@ async def start_game(interaction: discord.Interaction):
             async for user in reaction.users():
                 if user != client.user:
                     players.append(user.mention)
-    await channel.send("The following players have joined the game!\n" + str(players))
-
-@client.tree.command(description="Describe what the bot does")
-async def info(interaction: discord.Interaction):
-    await interaction.response.send_message(
-        f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
-    )
-
+    if len(players) < 1:
+        await channel.send("No players have joined!")
+    else:
+        await channel.send("The following players have joined the game!\n" + str(players))
 
 @client.tree.command(description="Describe what the bot does")
 async def info(interaction: discord.Interaction):
@@ -69,7 +67,7 @@ async def on_ready():  #  Called when internal cache is loaded
     #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
     channel_id =1315251666349588492
     channel = client.get_channel(channel_id) #  Gets channel from internal cache
-    await channel.send("hello world") #  Sends message to channel
+    #await channel.send("hello world") #  Sends message to channel
     await send_dm('<@598109867382931476>', "Tom isn't Pog")
     players = []
 
