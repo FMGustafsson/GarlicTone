@@ -11,12 +11,9 @@ print(TOKEN)
 
 TEST_SERVER = discord.Object(id=1315251665674440714)
 
-#client = discord.Client(intents=discord.Intents.default())
-
 class MyClient(discord.Client):
     def __init__(self):
         intents_list = discord.Intents.default()
-        #intents_list.message_content = True
         super().__init__(intents=intents_list)
         self.tree = discord.app_commands.CommandTree(self)
 
@@ -28,9 +25,6 @@ client = MyClient()
 
 @client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
 async def start_game(interaction: discord.Interaction):
-    #channel_id = 1315251666349588492
-    #channel = client.get_channel(channel_id)
-    #channel = client.get_channel()
     players = []
     message = await interaction.response.send_message(
         f"Game of Garlic Tone started!"
@@ -58,51 +52,8 @@ async def info(interaction: discord.Interaction):
         f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
     )
 
-
-#@client.event
-#async def on_ready():
-#    print(f'{client.user} has connected to Discord!')
-
 @client.event
 async def on_ready():  #  Called when internal cache is loaded
-    #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
-    channel_id =1315251666349588492
-    channel = client.get_channel(channel_id) #  Gets channel from internal cache
-    #await channel.send("hello world") #  Sends message to channel
-    await send_dm('<@598109867382931476>', "Tom isn't Pog")
-    players = []
-
-    message = await channel.send(
-        f"React to this message with ✅ to join the game!"
-    )
-    await message.add_reaction('✅')
-    await asyncio.sleep(10)
-
-    message = await channel.fetch_message(message.id)
-
-    for reaction in message.reactions:
-        print("yeet")
-        if reaction.emoji == '✅':
-            async for user in reaction.users():
-                if user != client.user:
-                    players.append(user.mention)
-
-    if len(players) < 1:
-        await channel.send('Time is up, and not enough players')
-    else:
-        print(players[0])
-
-        await channel.send(players)
-    
-    await send_dm_to_players(players)
-
-#@client.event
-#async def on_ready():
-#    print(f'{client.user} has connected to Discord!')
-
-@client.event
-async def on_ready():  #  Called when internal cache is loaded
-    #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
     pass
 
 @client.event
