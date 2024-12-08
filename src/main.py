@@ -76,6 +76,7 @@ async def start_game(interaction: discord.Interaction):
             await asyncio.sleep(30)
             await download_image_and_send(players, iteration)
         print("Finished")
+        await send_final_images(channel)
 
 
 @client.tree.command(description="Describe what the bot does")
@@ -220,18 +221,12 @@ async def send_prompt(players, round):
         await user.send("Your prompt is " + prompt)
 
 
-<<<<<<< HEAD
-async def send_final_images(GuildChannel: channel):
-=======
 
 
 async def send_final_images(channel):
->>>>>>> 556a628b9cfb3a8d20ab28585ed6b8ac752cf947
     for file in os.listdir("temp/"):
         if file.startswith("final"):
-            with open(file, 'rb') as f:
-                image = discord.File(f)
-                await channel.send(file=image)
+            await channel.send(file=discord.File(os.path.join("temp", file)))
 
 
 client.run(TOKEN)
