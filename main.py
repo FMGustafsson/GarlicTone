@@ -31,14 +31,6 @@ async def start_game(interation: discord.Interaction):
     await interation.response.send_message(
         f"Game of Garlic Tone started!"
     )
-
-#@client.event
-#async def on_ready():
-#    print(f'{client.user} has connected to Discord!')
-
-@client.event
-async def on_ready():  #  Called when internal cache is loaded
-    #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
     channel_id =1315251666349588492
     channel = client.get_channel(channel_id) #  Gets channel from internal cache
     await channel.send("hello world") #  Sends message to channel
@@ -66,16 +58,33 @@ async def on_ready():  #  Called when internal cache is loaded
     
     await send_dm_to_players(players)
 
+#@client.event
+#async def on_ready():
+#    print(f'{client.user} has connected to Discord!')
+
+@client.event
+async def on_ready():  #  Called when internal cache is loaded
+    #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
+    return
+
 @client.event
 async def send_dm_to_players(players):
-    blank = open("blankdrawing.png", "r")
     for player in players:
         player = player[2:]
         player = player[:-1]
         print(player)
         user = await client.fetch_user(player)
         await user.send(file=discord.File('blankdrawing.png'))
+    download_image_and_send(players)
 
+@client.event
+async def download_image_and_send(players):
+    for player in players:
+        latestmessage = (await discord.get_channel(player).history(limit=1).flatten())[0]
+        if str(latestmessage.attachments) == "[]": # Checks if there is an attachment on the message
+            return
+        else: # If there is it gets the filename from message.attachments
+            await latestmessage.attachments[0].save(latestmessage.attachments[0].filename) # saves the file
 
 @client.tree.command(description="Joins VC")
 async def joinvc(ctx):
