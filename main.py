@@ -51,8 +51,9 @@ async def start_game(interaction: discord.Interaction):
             print(players)
             user = await client.fetch_user(players[i])
             await user.send(file=discord.File('blankdrawing.png'))
-        await asyncio.sleep(20)
+        await asyncio.sleep(1)
         await download_image_and_send(players)
+    await ask_for_prompt(players)
 
 
 @client.tree.command(description="Describe what the bot does")
@@ -99,7 +100,7 @@ async def download_image_and_send(players):
                 print("Balls")
                 return
             else: # If there is it gets the filename from message.attachments
-                imageName = "temp/image" + player + ".png"
+                imageName = "temp/image_" + player + "_" + ".png"
                 await latestmessage.attachments[0].save(imageName) # saves the file
                 print("wins")
         else:
@@ -107,12 +108,27 @@ async def download_image_and_send(players):
             print("Fuck")
     i=1
     for player in players:
-        prevImage = "temp/image" + player + ".png"
+        prevImage = "temp/image_" + player + "_" + ".png"
         user = await client.fetch_user(players[i])
         await user.send(file=discord.File(prevImage))
         i=i+1
         if i>=len(players):
             i=0
+
+
+async def ask_for_prompt(players):
+    for player in players:
+        user = await client.fetch_user(player)
+        await user.send("Enter a Prompt:")
+    asyncio.wait(10)
+    for player in players:
+        user = await client.fetch_user(player)
+        messages = [message async for message in user.history(limit=1)]
+        latestmessage = messages[0]
+        promptPath = "temp/" + "prompt" + player + ".txt"
+        promptFile = open(promptPath, 'w')
+        promptFile.write(str(latestmessage.content))
+
 
 
 
