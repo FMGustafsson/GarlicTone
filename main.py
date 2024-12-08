@@ -5,7 +5,8 @@ import asyncio
 import discord
 import re
 from dotenv import load_dotenv
-from utils import *
+from src.utils import *
+from makeImage import make_final_images
 
 start_msg  = f"Welcome to GarlicTone! Round 1 has started!\nCome up with a prompt to be given to another player!"
 prompt_msg = f"Another player has drawn the image below; can you guess what their prompt was?"
@@ -65,17 +66,16 @@ async def start_game(interaction: discord.Interaction):
             round = round+1
             if round>len(players):
                 break
-            await send_image(players, iteration)
-            iteration = iteration + 1
             await ask_for_prompt(players, iteration)
             round = round+1
             if round>len(players):
                 break
-            await send_prompt(players, iteration)
             await send_blank(players)
             await asyncio.sleep(30)
             await download_image_and_send(players, iteration)
+            iteration = iteration + 1
         print("Finished")
+        make_final_images(players)
         await send_final_images(channel)
 
 
@@ -156,6 +156,14 @@ async def download_image_and_send(players, round):
         else:
             # Not found the user
             print("Fuck")
+        i=1
+    for player in players:
+        prevImage = "temp/image_" + player + "_" + str(round) + ".png"
+        user = await client.fetch_user(players[i])
+        await user.send(file=discord.File(prevImage))
+        i=i+1
+        if i>=len(players):
+            i=0
     
 async def send_image(players, round):
     i=1
@@ -208,6 +216,15 @@ async def ask_for_prompt(players, round):
         promptFile = open(promptPath, 'w')
         promptFile.write(str(latestmessage.content))
         promptFile.close()
+    for i in range(len(players)):
+        if i == len(players)-1:
+            user = await client.fetch_user(players[0])
+        else:
+            user = await client.fetch_user(players[i+1])
+        prevPromptPath = "temp/" + "prompt_" + players[i] + "_" + str(round) + ".txt"
+        prevPrompt = open(prevPromptPath, 'r')
+        prompt = prevPrompt.read()
+        await user.send("Your prompt is " + prompt)
 
 async def send_prompt(players, round):
     for i in range(len(players)):
