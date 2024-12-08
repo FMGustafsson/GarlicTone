@@ -2,6 +2,7 @@
 import os
 import asyncio
 import discord
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -71,7 +72,9 @@ async def on_ready():  #  Called when internal cache is loaded
     await send_dm('<@598109867382931476>', "Tom isn't Pog")
     players = []
 
-    message = await channel.send("Message")
+    message = await channel.send(
+        f"React to this message with ✅ to join the game!"
+    )
     await message.add_reaction('✅')
     await asyncio.sleep(10)
 
@@ -90,11 +93,50 @@ async def on_ready():  #  Called when internal cache is loaded
         print(players[0])
 
         await channel.send(players)
+    
+    await send_dm_to_players(players)
+
+#@client.event
+#async def on_ready():
+#    print(f'{client.user} has connected to Discord!')
 
 @client.event
-async def send_dm(userID, message):
-    user = await client.fetch_user(userID)
-    await user.send(message)
+async def on_ready():  #  Called when internal cache is loaded
+    #channel = discord.utils.get(client.get_all_channels(), name=name_channel)
+    pass
+
+@client.event
+async def send_dm_to_players(players):
+    for player in players:
+        player = player[2:]
+        player = player[:-1]
+        print(player)
+        user = await client.fetch_user(player)
+        await user.send(file=discord.File('blankdrawing.png'))
+    await asyncio.sleep(20)
+    await download_image_and_send(players)
+
+@client.event
+async def download_image_and_send(players):
+    for player in players:
+        player = player[2:]
+        player = player[:-1]
+        user = await client.fetch_user(player)
+        if user:
+            # found the user
+            messages = [message async for message in user.history(limit=1)]
+            latestmessage = messages[0]
+            if not latestmessage.attachments: # Checks if there is an attachment on the message
+                print("Balls")
+                return
+            else: # If there is it gets the filename from message.attachments
+                imageName = "image" + player + ".png"
+                await latestmessage.attachments[0].save(imageName) # saves the file
+                print("wins")
+        else:
+            # Not found the user
+            print("Fuck")
+
 
 
 @client.tree.command(description="Joins VC")
