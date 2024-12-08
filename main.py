@@ -70,4 +70,11 @@ async def send_dm(userID, message):
     await user.send(message)
 
 
+@client.tree.command(description="Joins VC")
+async def joinvc(ctx):
+    channel = ctx.message.author.voice.voice_channel
+    await client.join_voice_channel(channel)
+
+
+
 client.run(TOKEN)
