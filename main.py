@@ -2,6 +2,7 @@
 import os
 import asyncio
 import discord
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,7 +21,6 @@ async def on_ready():  #  Called when internal cache is loaded
     channel_id =1315251666349588492
     channel = client.get_channel(channel_id) #  Gets channel from internal cache
     await channel.send("hello world") #  Sends message to channel
-    await send_dm('<@598109867382931476>', "Tom isn't Pog")
     players = []
 
     message = await channel.send("Message")
@@ -42,11 +42,18 @@ async def on_ready():  #  Called when internal cache is loaded
         print(players[0])
 
         await channel.send(players)
+    
+    await send_dm_to_players(players)
 
 @client.event
-async def send_dm(userID, message):
-    user = await client.fetch_user(userID)
-    await user.send(message)
+async def send_dm_to_players(players):
+    blank = open("blankdrawing.png", "r")
+    for player in players:
+        player = player[2:]
+        player = player[:-1]
+        print(player)
+        user = await client.fetch_user(player)
+        await user.send(file=discord.File('blankdrawing.png'))
 
 
 client.run(TOKEN)
