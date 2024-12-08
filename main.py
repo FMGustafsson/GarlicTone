@@ -9,7 +9,28 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 print(TOKEN)
 
-client = discord.Client(intents=discord.Intents.default())
+TEST_SERVER = discord.Object(id=1315251665674440714)
+
+#client = discord.Client(intents=discord.Intents.default())
+
+class MyClient(discord.Client):
+    def __init__(self):
+        intents_list = discord.Intents.default()
+        #intents_list.message_content = True
+        super().__init__(intents=intents_list)
+        self.tree = discord.app_commands.CommandTree(self)
+
+    async def setup_hook(self) -> None:
+        self.tree.copy_global_to(guild=TEST_SERVER)
+        await self.tree.sync(guild=TEST_SERVER)
+
+client = MyClient()
+
+@client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
+async def start_game(interation: discord.Interaction):
+    await interation.response.send_message(
+        f"Game of Garlic Tone started!"
+    )
 
 #@client.event
 #async def on_ready():
@@ -54,6 +75,13 @@ async def send_dm_to_players(players):
         print(player)
         user = await client.fetch_user(player)
         await user.send(file=discord.File('blankdrawing.png'))
+
+
+@client.tree.command(description="Joins VC")
+async def joinvc(ctx):
+    channel = ctx.message.author.voice.voice_channel
+    await client.join_voice_channel(channel)
+
 
 
 client.run(TOKEN)
