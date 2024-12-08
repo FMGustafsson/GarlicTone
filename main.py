@@ -70,9 +70,9 @@ async def send_dm_to_players(players):
 @client.event
 async def download_image_and_send(players):
     os.mkdir('temp')
+    i=1
     for player in players:
-        player = player[2:]
-        player = player[:-1]
+        player = player[2:-1]
         user = await client.fetch_user(player)
         if user:
             # found the user
@@ -85,9 +85,14 @@ async def download_image_and_send(players):
                 imageName = "temp/image" + player + ".png"
                 await latestmessage.attachments[0].save(imageName) # saves the file
                 print("wins")
+                user = await client.fetch_user(players[i])
+                await user.send(file=discord.File(imageName))
         else:
             # Not found the user
             print("Fuck")
+        i=i+1
+        if i>len(players):
+            i=0
 
 
 
