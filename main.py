@@ -107,7 +107,7 @@ async def download_image_and_send(players):
             print("Fuck")
     i=1
     for player in players:
-        prevImage = os.path.join("temp/image", player, ".png")
+        prevImage = "temp/image" + player + ".png"
         user = await client.fetch_user(players[i])
         await user.send(file=discord.File(prevImage))
         i=i+1
