@@ -26,8 +26,8 @@ class MyClient(discord.Client):
 client = MyClient()
 
 @client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
-async def start_game(interation: discord.Interaction):
-    await interation.response.send_message(
+async def start_game(interaction: discord.Interaction):
+    await interaction.response.send_message(
         f"Game of Garlic Tone started!"
     )
 
@@ -68,6 +68,13 @@ async def on_ready():  #  Called when internal cache is loaded
 async def send_dm(userID, message):
     user = await client.fetch_user(userID)
     await user.send(message)
+
+
+@client.tree.command(description="Joins VC")
+async def joinvc(interaction: discord.Interaction):
+    channel = interaction.user.voice.voice_channel
+    await client.join_voice_channel(channel)
+
 
 
 client.run(TOKEN)
