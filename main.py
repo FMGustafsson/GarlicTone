@@ -26,11 +26,11 @@ class MyClient(discord.Client):
 client = MyClient()
 
 @client.tree.command(description="Start A Game Of Garlic Tone With The Bot")
-async def start_game(interation: discord.Interaction):
+async def start_game(interaction: discord.Interaction):
     channel_id = 1315251666349588492
     channel = client.get_channel(channel_id)
     players = []
-    await interation.response.send_message(
+    await interaction.response.send_message(
         f"Game of Garlic Tone started!"
     )
     message = await channel.send(
@@ -45,6 +45,20 @@ async def start_game(interation: discord.Interaction):
                 if user != client.user:
                     players.append(user.mention)
     await channel.send("The following players have joined the game!\n" + str(players))
+
+@client.tree.command(description="Describe what the bot does")
+async def info(interaction: discord.Interaction):
+    await interaction.response.send_message(
+        f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
+    )
+
+
+@client.tree.command(description="Describe what the bot does")
+async def info(interaction: discord.Interaction):
+    await interaction.response.send_message(
+        f"This is a version of the popular online game 'gartic phone' that runs entirely in discord. run /start_game to give it a try!"
+    )
+
 
 #@client.event
 #async def on_ready():
@@ -83,6 +97,13 @@ async def on_ready():  #  Called when internal cache is loaded
 async def send_dm(userID, message):
     user = await client.fetch_user(userID)
     await user.send(message)
+
+
+@client.tree.command(description="Joins VC")
+async def joinvc(interaction: discord.Interaction):
+    channel = interaction.user.voice.voice_channel
+    await client.join_voice_channel(channel)
+
 
 
 client.run(TOKEN)
